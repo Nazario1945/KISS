@@ -46,6 +46,22 @@ jobs:
           name: debug
           path: app/build/outputs/apk/debug/app-debug.apk
           archive: false
+      - name: Sign Release APK
+        if: ${{ env.KEYSTORE_B64 != '' && github.event_name != 'pull_request' }}
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > release.keystore
+          APK_PATH="app/build/outputs/apk/release/app-release-unsigned.apk"
+          ZIPALIGN=$(find $ANDROID_HOME -name zipalign | head -n 1)
+          APKSIGNER=$(find $ANDROID_HOME -name apksigner | head -n 1)
+          $ZIPALIGN -v -p 4 $APK_PATH app-release-aligned.apk
+          $APKSIGNER sign --ks release.keystore --ks-key-alias $KEY_ALIAS --ks-pass pass:$STORE_PASSWORD --key-pass pass:$KEY_PASSWORD --out app-release-signed.apk app-release-aligned.apk
+          mv app-release-signed.apk $APK_PATH
+
       - name: Upload release APK
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7
