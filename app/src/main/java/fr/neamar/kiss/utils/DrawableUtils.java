@@ -63,7 +63,7 @@ public class DrawableUtils {
         if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
         } else {
-            int targetSize = (int) (128 * android.content.res.Resources.getSystem().getDisplayMetrics().density);
+            int targetSize = (int) (96 * android.content.res.Resources.getSystem().getDisplayMetrics().density);
             int width = Math.min(drawable.getIntrinsicWidth(), targetSize);
             int height = Math.min(drawable.getIntrinsicHeight(), targetSize);
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
