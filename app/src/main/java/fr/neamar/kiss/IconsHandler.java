@@ -463,7 +463,11 @@ public class IconsHandler {
         }
 
         try (FileInputStream fis = new FileInputStream(cacheGetFileName(key))) {
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                options.inPreferredConfig = Bitmap.Config.HARDWARE;
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(fis, null, options);
             if (bitmap != null) {
                 return new BitmapDrawable(this.ctx.getResources(), bitmap);
             } else {
