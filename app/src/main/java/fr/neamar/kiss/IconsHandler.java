@@ -448,7 +448,11 @@ public class IconsHandler {
         Bitmap bitmap = DrawableUtils.drawableToBitmap(drawable);
         if (bitmap != null) {
             try (FileOutputStream fos = new FileOutputStream(drawableFile)) {
-                bitmap.compress(CompressFormat.PNG, 100, fos);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                    bitmap.compress(CompressFormat.WEBP_LOSSLESS, 90, fos);
+                } else {
+                    bitmap.compress(CompressFormat.PNG, 100, fos);
+                }
                 fos.flush();
             } catch (Exception e) {
                 Log.e(TAG, "Unable to store drawable in cache ", e);
